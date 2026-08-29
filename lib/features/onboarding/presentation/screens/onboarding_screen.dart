@@ -100,34 +100,48 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     _buildProfile('assets/images/kids_rectangle.jpg', 'Kids'),
                   ],
                 ),
-              ],
-            ),
-          ),
-          const Spacer(flex: 2),
-          // Add Profile Button
-          GestureDetector(
-            onTap: () {},
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SvgPicture.asset(
-                  'assets/svgs/plus_circle.svg',
-                  width: 50.w,
-                  height: 50.w,
-                ),
-                SizedBox(height: 14.h),
-                Text(
-                  'Add Profile',
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: const Color(0xFFE5E5E5),
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
+                SizedBox(height: 28.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildAddProfileItem(),
+                    SizedBox(width: 100.w),
+                  ],
                 ),
               ],
             ),
           ),
           const Spacer(flex: 4),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddProfileItem() {
+    return GestureDetector(
+      onTap: widget.onGetStarted,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 100.w,
+            height: 100.w,
+            alignment: Alignment.center,
+            child: SvgPicture.asset(
+              'assets/svgs/plus_circle.svg',
+              width: 50.w,
+              height: 50.w,
+            ),
+          ),
+          SizedBox(height: 10.h),
+          Text(
+            'Add Profile',
+            style: AppTypography.bodyMedium.copyWith(
+              color: const Color(0xFFE5E5E5),
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
         ],
       ),
     );

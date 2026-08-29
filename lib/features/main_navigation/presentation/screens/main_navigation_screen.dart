@@ -95,10 +95,14 @@ class MainNavigationScreen extends StatelessWidget {
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
                     'assets/svgs/home_icon.svg',
+                    width: 24.w,
+                    height: 24.w,
                     colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
                   ),
                   activeIcon: SvgPicture.asset(
                     'assets/svgs/home_icon.svg',
+                    width: 24.w,
+                    height: 24.w,
                     colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
                   ),
                   label: 'Home',
@@ -106,32 +110,66 @@ class MainNavigationScreen extends StatelessWidget {
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
                     'assets/svgs/search_icon.svg',
+                    width: 24.w,
+                    height: 24.w,
                     colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
                   ),
                   activeIcon: SvgPicture.asset(
                     'assets/svgs/search_icon.svg',
+                    width: 24.w,
+                    height: 24.w,
                     colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
                   ),
                   label: 'Search',
                 ),
                 BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    'assets/svgs/coming_soon_icon.svg',
-                    colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
+                  icon: Badge(
+                    label: Text(
+                      '4',
+                      style: TextStyle(
+                        fontSize: 9.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    backgroundColor: AppColors.primary,
+                    child: SvgPicture.asset(
+                      'assets/svgs/coming_soon_icon.svg',
+                      width: 24.w,
+                      height: 24.w,
+                      colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
+                    ),
                   ),
-                  activeIcon: SvgPicture.asset(
-                    'assets/svgs/coming_soon_icon.svg',
-                    colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
+                  activeIcon: Badge(
+                    label: Text(
+                      '4',
+                      style: TextStyle(
+                        fontSize: 9.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    backgroundColor: AppColors.primary,
+                    child: SvgPicture.asset(
+                      'assets/svgs/coming_soon_icon.svg',
+                      width: 24.w,
+                      height: 24.w,
+                      colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
+                    ),
                   ),
                   label: 'Coming Soon',
                 ),
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
                     'assets/svgs/download_icon.svg',
+                    width: 24.w,
+                    height: 24.w,
                     colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
                   ),
                   activeIcon: SvgPicture.asset(
                     'assets/svgs/download_icon.svg',
+                    width: 24.w,
+                    height: 24.w,
                     colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
                   ),
                   label: 'Downloads',
@@ -139,10 +177,14 @@ class MainNavigationScreen extends StatelessWidget {
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
                     'assets/svgs/more_icon.svg',
+                    width: 24.w,
+                    height: 24.w,
                     colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
                   ),
                   activeIcon: SvgPicture.asset(
                     'assets/svgs/more_icon.svg',
+                    width: 24.w,
+                    height: 24.w,
                     colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
                   ),
                   label: 'More',
