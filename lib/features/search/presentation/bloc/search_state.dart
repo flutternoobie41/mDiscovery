@@ -9,7 +9,30 @@ abstract class SearchState extends Equatable {
 }
 
 class SearchInitialState extends SearchState {
-  const SearchInitialState();
+  final List<MovieEntity> trendingMovies;
+  final bool isLoading;
+  final String? error;
+
+  const SearchInitialState({
+    this.trendingMovies = const [],
+    this.isLoading = false,
+    this.error,
+  });
+
+  SearchInitialState copyWith({
+    List<MovieEntity>? trendingMovies,
+    bool? isLoading,
+    String? error,
+  }) {
+    return SearchInitialState(
+      trendingMovies: trendingMovies ?? this.trendingMovies,
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
+    );
+  }
+
+  @override
+  List<Object?> get props => [trendingMovies, isLoading, error];
 }
 
 class SearchLoadingState extends SearchState {

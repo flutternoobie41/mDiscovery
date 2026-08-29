@@ -19,6 +19,12 @@ class AppStyle {
         fontWeight: FontWeight.w700,
       );
 
+  static TextStyle get tss15W400 => TextStyle(
+        fontFamily: fontFamily,
+        fontSize: 15.sp,
+        fontWeight: FontWeight.w400,
+      );
+
   static TextStyle get tss20W600 => TextStyle(
         fontFamily: fontFamily,
         fontSize: 20.sp,

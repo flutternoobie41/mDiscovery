@@ -33,6 +33,9 @@ class AppColors {
   static const Color activeBottomIconColor = Color(0xFFFFFFFF);
   static const Color inactiveBottomIconColor = Color(0xFF8C8787);
 
+  // Search Bar
+  static const Color searchBarBg = Color(0xFF424242);
+
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primary, primaryGradientEnd],

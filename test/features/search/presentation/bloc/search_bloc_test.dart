@@ -4,20 +4,27 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:mdiscover/core/constants/mock_data.dart';
 import 'package:mdiscover/core/network/error_handler.dart';
+import 'package:mdiscover/features/search/domain/usecases/get_trending_movies_usecase.dart';
 import 'package:mdiscover/features/search/domain/usecases/search_movies_usecase.dart';
 import 'package:mdiscover/features/search/presentation/bloc/search_bloc.dart';
 import 'package:mdiscover/features/search/presentation/bloc/search_event.dart';
 import 'package:mdiscover/features/search/presentation/bloc/search_state.dart';
 
 class MockSearchMoviesUseCase extends Mock implements SearchMoviesUseCase {}
+class MockGetTrendingMoviesUseCase extends Mock implements GetTrendingMoviesUseCase {}
 
 void main() {
   late SearchBloc searchBloc;
   late MockSearchMoviesUseCase mockSearchMoviesUseCase;
+  late MockGetTrendingMoviesUseCase mockGetTrendingMoviesUseCase;
 
   setUp(() {
     mockSearchMoviesUseCase = MockSearchMoviesUseCase();
-    searchBloc = SearchBloc(searchMoviesUseCase: mockSearchMoviesUseCase);
+    mockGetTrendingMoviesUseCase = MockGetTrendingMoviesUseCase();
+    searchBloc = SearchBloc(
+      searchMoviesUseCase: mockSearchMoviesUseCase,
+      getTrendingMoviesUseCase: mockGetTrendingMoviesUseCase,
+    );
   });
 
   tearDown(() {

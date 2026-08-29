@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../../../core/network/error_handler.dart';
+import '../../../dashboard/domain/entities/movie_entity.dart';
+import '../../domain/usecases/get_trending_movies_usecase.dart';
 import '../../domain/usecases/search_movies_usecase.dart';
 import 'search_event.dart';
 import 'search_state.dart';
@@ -11,14 +13,21 @@ EventTransformer<T> debounceTransformer<T>(Duration duration) {
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final SearchMoviesUseCase searchMoviesUseCase;
+  final GetTrendingMoviesUseCase getTrendingMoviesUseCase;
 
-  SearchBloc({required this.searchMoviesUseCase}) : super(const SearchInitialState()) {
+  List<MovieEntity> _trendingMovies = [];
+
+  SearchBloc({
+    required this.searchMoviesUseCase,
+    required this.getTrendingMoviesUseCase,
+  }) : super(const SearchInitialState()) {
     on<SearchQueryChangedEvent>(
       _onSearchQueryChanged,
       transformer: debounceTransformer(const Duration(milliseconds: 400)),
     );
     on<ClearSearchEvent>(_onClearSearch);
     on<LoadMoreSearchMoviesEvent>(_onLoadMoreSearchMovies);
+    on<LoadTrendingMoviesEvent>(_onLoadTrendingMovies);
   }
 
   Future<void> _onSearchQueryChanged(
@@ -28,7 +37,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     final query = event.query.trim();
 
     if (query.isEmpty) {
-      emit(const SearchInitialState());
+      emit(SearchInitialState(trendingMovies: _trendingMovies));
       return;
     }
 
@@ -52,6 +61,25 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     } else {
       emit(SearchErrorState(
         message: result.error?.message ?? 'Failed to perform search.',
+      ));
+    }
+  }
+
+  Future<void> _onLoadTrendingMovies(
+    LoadTrendingMoviesEvent event,
+    Emitter<SearchState> emit,
+  ) async {
+    emit(const SearchInitialState(isLoading: true));
+
+    final result = await getTrendingMoviesUseCase.execute();
+
+    if (result is DataSuccess && result.data != null) {
+      _trendingMovies = result.data!.take(10).toList();
+      emit(SearchInitialState(trendingMovies: _trendingMovies));
+    } else {
+      emit(SearchInitialState(
+        error: result.error?.message ?? 'Failed to load trending movies.',
+        trendingMovies: _trendingMovies,
       ));
     }
   }
@@ -100,6 +128,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     ClearSearchEvent event,
     Emitter<SearchState> emit,
   ) {
-    emit(const SearchInitialState());
+    emit(SearchInitialState(trendingMovies: _trendingMovies));
   }
 }

@@ -9,6 +9,7 @@ import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/search/data/datasources/search_remote_datasource.dart';
 import '../../features/search/data/repositories/search_repository_impl.dart';
 import '../../features/search/domain/repositories/search_repository.dart';
+import '../../features/search/domain/usecases/get_trending_movies_usecase.dart';
 import '../../features/search/domain/usecases/search_movies_usecase.dart';
 import '../../features/search/presentation/bloc/search_bloc.dart';
 
@@ -60,8 +61,14 @@ Future<void> initDependencyInjection() async {
   sl.registerLazySingleton<SearchMoviesUseCase>(
     () => SearchMoviesUseCase(repository: sl()),
   );
+  sl.registerLazySingleton<GetTrendingMoviesUseCase>(
+    () => GetTrendingMoviesUseCase(repository: sl()),
+  );
   sl.registerFactory<SearchBloc>(
-    () => SearchBloc(searchMoviesUseCase: sl()),
+    () => SearchBloc(
+      searchMoviesUseCase: sl(),
+      getTrendingMoviesUseCase: sl(),
+    ),
   );
 
   // Features - Coming Soon

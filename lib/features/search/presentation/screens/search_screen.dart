@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mdiscover/core/constants/app_colors.dart';
-import 'package:mdiscover/core/constants/app_typography.dart';
+import 'package:mdiscover/core/constants/app_style.dart';
 import 'package:mdiscover/core/widgets/custom_cached_image.dart';
 import 'package:mdiscover/core/widgets/custom_shimmer_loader.dart';
 import 'package:mdiscover/core/widgets/error_retry_widget.dart';
-import 'package:mdiscover/core/widgets/rating_badge.dart';
 import 'package:mdiscover/features/dashboard/domain/entities/movie_entity.dart';
 import '../bloc/search_bloc.dart';
 import '../bloc/search_event.dart';
 import '../bloc/search_state.dart';
+import '../../../main_navigation/presentation/cubit/navigation_cubit.dart';
 
 class SearchScreen extends StatefulWidget {
   final Function(MovieEntity) onMovieSelected;
@@ -28,28 +29,26 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   late final ScrollController _scrollController;
 
-  final List<Map<String, dynamic>> _genreCategories = [
-    {'name': 'Action', 'icon': Icons.flash_on_rounded, 'color': const Color(0xFFFF5252)},
-    {'name': 'Sci-Fi', 'icon': Icons.rocket_launch_rounded, 'color': const Color(0xFF7C4DFF)},
-    {'name': 'Comedy', 'icon': Icons.sentiment_very_satisfied_rounded, 'color': const Color(0xFFFFB300)},
-    {'name': 'Drama', 'icon': Icons.theater_comedy_rounded, 'color': const Color(0xFF00E676)},
-    {'name': 'Thriller', 'icon': Icons.visibility_rounded, 'color': const Color(0xFFFF4081)},
-    {'name': 'Animation', 'icon': Icons.palette_rounded, 'color': const Color(0xFF00E5FF)},
-  ];
-
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
+    _searchController.addListener(_onSearchTextChanged);
+    context.read<SearchBloc>().add(const LoadTrendingMoviesEvent());
   }
 
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _searchController.removeListener(_onSearchTextChanged);
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onSearchTextChanged() {
+    setState(() {}); // Rebuilds to show/hide the clear and mic icons
   }
 
   void _onScroll() {
@@ -61,150 +60,224 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        title: Text('Search Movies', style: AppTypography.heading2),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (query) {
-                context.read<SearchBloc>().add(SearchQueryChangedEvent(query));
-              },
-              style: AppTypography.bodyLarge,
-              decoration: InputDecoration(
-                hintText: 'Search movies, genres, cast...',
-                hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.textMuted),
-                prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear_rounded, color: AppColors.textMuted),
-                        onPressed: () {
-                          _searchController.clear();
-                          context.read<SearchBloc>().add(const ClearSearchEvent());
-                          setState(() {});
-                        },
-                      )
-                    : null,
-                filled: true,
-                fillColor: AppColors.surface,
-                contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.r),
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.r),
-                  borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: BlocBuilder<SearchBloc, SearchState>(
-              builder: (context, state) {
-                if (state is SearchInitialState) {
-                  return _buildInitialGenreGrid();
-                } else if (state is SearchLoadingState) {
-                  return _buildLoadingGrid();
-                } else if (state is SearchEmptyState) {
-                  return _buildEmptyResults(state.query);
-                } else if (state is SearchErrorState) {
-                  return ErrorRetryWidget(
-                    errorMessage: state.message,
-                    onRetry: () {
-                      context.read<SearchBloc>().add(SearchQueryChangedEvent(_searchController.text));
-                    },
-                  );
-                } else if (state is SearchLoadedState) {
-                  return _buildMovieGrid(state);
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInitialGenreGrid() {
-    return Padding(
-      padding: EdgeInsets.all(20.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Popular Genres', style: AppTypography.heading3),
-          SizedBox(height: 16.h),
-          Expanded(
-            child: GridView.builder(
-              itemCount: _genreCategories.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12.w,
-                mainAxisSpacing: 12.h,
-                childAspectRatio: 2.2,
-              ),
-              itemBuilder: (context, index) {
-                final genre = _genreCategories[index];
-                return InkWell(
-                  onTap: () {
-                    _searchController.text = genre['name'] as String;
-                    context.read<SearchBloc>().add(SearchQueryChangedEvent(genre['name'] as String));
-                    setState(() {});
+    return BlocListener<NavigationCubit, int>(
+      listener: (context, state) {
+        if (state == 1) {
+          context.read<SearchBloc>().add(const LoadTrendingMoviesEvent());
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Column(
+          children: [
+            // Full-screen width search bar with no horizontal padding
+            SafeArea(
+              bottom: false,
+              child: Container(
+                color: AppColors.searchBarBg,
+                padding: EdgeInsets.symmetric(vertical: 8.h),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (query) {
+                    context.read<SearchBloc>().add(SearchQueryChangedEvent(query));
                   },
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(color: Colors.white10),
+                  style: AppStyle.tss15W400.copyWith(color: Colors.white),
+                  cursorColor: Colors.white,
+                  decoration: InputDecoration(
+                    hintText: 'Search for a show, movie, genre, e.t.c.',
+                    hintStyle: AppStyle.tss15W400.copyWith(color: AppColors.inactiveBottomIconColor),
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(left: 16.w, right: 12.w),
+                      child: SvgPicture.asset(
+                        'assets/svgs/search_bar_search_icon.svg',
+                        width: 20.w,
+                        height: 20.h,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(8.w),
-                          decoration: BoxDecoration(
-                            color: (genre['color'] as Color).withValues(alpha: 0.2),
-                            shape: BoxShape.circle,
+                    prefixIconConstraints: BoxConstraints(
+                      minWidth: 40.w,
+                      minHeight: 20.h,
+                    ),
+                    suffixIcon: _searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear_rounded, color: Colors.white),
+                            onPressed: () {
+                              _searchController.clear();
+                              context.read<SearchBloc>().add(const ClearSearchEvent());
+                            },
+                          )
+                        : Padding(
+                            padding: EdgeInsets.only(right: 16.w, left: 12.w),
+                            child: SvgPicture.asset(
+                              'assets/svgs/mic_icon.svg',
+                              width: 20.w,
+                              height: 20.h,
+                              fit: BoxFit.contain,
+                            ),
                           ),
-                          child: Icon(genre['icon'] as IconData, color: genre['color'] as Color, size: 20.w),
-                        ),
-                        SizedBox(width: 12.w),
-                        Text(genre['name'] as String, style: AppTypography.titleLarge.copyWith(fontSize: 14.sp)),
-                      ],
+                    suffixIconConstraints: BoxConstraints(
+                      minWidth: 40.w,
+                      minHeight: 20.h,
                     ),
+                    filled: true,
+                    fillColor: AppColors.searchBarBg,
+                    contentPadding: EdgeInsets.symmetric(vertical: 12.h),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
                   ),
-                );
-              },
+                ),
+              ),
             ),
-          ),
-        ],
+            Expanded(
+              child: BlocBuilder<SearchBloc, SearchState>(
+                builder: (context, state) {
+                  if (state is SearchInitialState) {
+                    return _buildTopSearches(state);
+                  } else if (state is SearchLoadingState) {
+                    return _buildLoadingList();
+                  } else if (state is SearchEmptyState) {
+                    return _buildEmptyResults(state.query);
+                  } else if (state is SearchErrorState) {
+                    return ErrorRetryWidget(
+                      errorMessage: state.message,
+                      onRetry: () {
+                        context.read<SearchBloc>().add(SearchQueryChangedEvent(_searchController.text));
+                      },
+                    );
+                  } else if (state is SearchLoadedState) {
+                    return _buildSearchResults(state);
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildLoadingGrid() {
-    return GridView.builder(
-      padding: EdgeInsets.all(20.w),
-      itemCount: 6,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12.w,
-        mainAxisSpacing: 16.h,
-        childAspectRatio: 0.68,
-      ),
-      itemBuilder: (context, index) => CustomShimmerLoader(
-        width: double.infinity,
-        height: 220.h,
-        borderRadius: 16.r,
+  Widget _buildTopSearches(SearchInitialState state) {
+    if (state.isLoading) {
+      return _buildLoadingList();
+    }
+
+    if (state.error != null) {
+      return ErrorRetryWidget(
+        errorMessage: state.error!,
+        onRetry: () {
+          context.read<SearchBloc>().add(const LoadTrendingMoviesEvent());
+        },
+      );
+    }
+
+    final trendingMovies = state.trendingMovies;
+
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 16.h),
+            child: Text(
+              'Top Searches',
+              style: AppStyle.tss20W700.copyWith(color: Colors.white),
+            ),
+          ),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final movie = trendingMovies[index];
+              return Padding(
+                padding: EdgeInsets.only(bottom: 3.h),
+                child: _MovieListItem(
+                  movie: movie,
+                  onTap: () => widget.onMovieSelected(movie),
+                ),
+              );
+            },
+            childCount: trendingMovies.length,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchResults(SearchLoadedState state) {
+    final movies = state.movies;
+
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final movie = movies[index];
+              return Padding(
+                padding: EdgeInsets.only(bottom: 3.h),
+                child: _MovieListItem(
+                  movie: movie,
+                  onTap: () => widget.onMovieSelected(movie),
+                ),
+              );
+            },
+            childCount: movies.length,
+          ),
+        ),
+        if (state.isLoadMoreActive)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.h),
+              child: const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildLoadingList() {
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      itemCount: 10,
+      itemBuilder: (context, index) => Padding(
+        padding: EdgeInsets.only(bottom: 3.h),
+        child: Container(
+          color: AppColors.searchBarBg,
+          height: 76.h,
+          child: Row(
+            children: [
+              CustomShimmerLoader(
+                width: 140.w,
+                height: 76.h,
+                borderRadius: 0,
+              ),
+              SizedBox(width: 20.w),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomShimmerLoader(width: 120.w, height: 14.h),
+                    SizedBox(height: 6.h),
+                    CustomShimmerLoader(width: 80.w, height: 14.h),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: CustomShimmerLoader(
+                  width: 28.w,
+                  height: 28.h,
+                  borderRadius: 14.r,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -216,87 +289,65 @@ class _SearchScreenState extends State<SearchScreen> {
         children: [
           Icon(Icons.search_off_rounded, size: 64.w, color: AppColors.textMuted),
           SizedBox(height: 16.h),
-          Text('No Movies Found', style: AppTypography.heading3),
+          Text('No Movies Found', style: AppStyle.tss20W700.copyWith(color: Colors.white)),
           SizedBox(height: 8.h),
           Text(
             'We couldn\'t find any results for "$query"',
-            style: AppTypography.bodyMedium,
+            style: AppStyle.tss15W400.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildMovieGrid(SearchLoadedState state) {
-    final movies = state.movies;
+class _MovieListItem extends StatelessWidget {
+  final MovieEntity movie;
+  final VoidCallback onTap;
 
-    return CustomScrollView(
-      controller: _scrollController,
-      slivers: [
-        SliverPadding(
-          padding: EdgeInsets.all(20.w),
-          sliver: SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12.w,
-              mainAxisSpacing: 16.h,
-              childAspectRatio: 0.68,
+  const _MovieListItem({
+    required this.movie,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        color: AppColors.searchBarBg,
+        height: 76.h,
+        width: double.infinity,
+        child: Row(
+          children: [
+            CustomCachedImage(
+              imageUrl: movie.backdropPath,
+              width: 140.w,
+              height: 76.h,
+              fit: BoxFit.cover,
+              borderRadius: 0,
             ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final movie = movies[index];
-                return GestureDetector(
-                  onTap: () => widget.onMovieSelected(movie),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Stack(
-                          children: [
-                            CustomCachedImage(
-                              imageUrl: movie.posterPath,
-                              width: double.infinity,
-                              height: double.infinity,
-                              borderRadius: 16.r,
-                            ),
-                            Positioned(
-                              top: 8.h,
-                              right: 8.w,
-                              child: RatingBadge(rating: movie.voteAverage),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        movie.title,
-                        style: AppTypography.titleLarge.copyWith(fontSize: 14.sp),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        movie.releaseDate.isNotEmpty ? movie.releaseDate.split('-').first : '',
-                        style: AppTypography.bodySmall,
-                      ),
-                    ],
-                  ),
-                );
-              },
-              childCount: movies.length,
-            ),
-          ),
-        ),
-        if (state.isLoadMoreActive)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 24.h),
-              child: const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+            SizedBox(width: 20.w),
+            Expanded(
+              child: Text(
+                movie.title,
+                style: AppStyle.tss15W400.copyWith(color: Colors.white),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-          ),
-      ],
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: SvgPicture.asset(
+                'assets/svgs/play_circle.svg',
+                width: 28.w,
+                height: 28.h,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

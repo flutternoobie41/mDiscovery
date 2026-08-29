@@ -23,3 +23,7 @@ class ClearSearchEvent extends SearchEvent {
 class LoadMoreSearchMoviesEvent extends SearchEvent {
   const LoadMoreSearchMoviesEvent();
 }
+
+class LoadTrendingMoviesEvent extends SearchEvent {
+  const LoadTrendingMoviesEvent();
+}
