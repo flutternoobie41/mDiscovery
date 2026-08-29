@@ -19,3 +19,7 @@ class SearchQueryChangedEvent extends SearchEvent {
 class ClearSearchEvent extends SearchEvent {
   const ClearSearchEvent();
 }
+
+class LoadMoreSearchMoviesEvent extends SearchEvent {
+  const LoadMoreSearchMoviesEvent();
+}

@@ -4,7 +4,7 @@ import 'package:mdiscover/core/network/dio_client.dart';
 import 'package:mdiscover/features/dashboard/data/models/movie_model.dart';
 
 abstract class ComingSoonRemoteDataSource {
-  Future<List<MovieModel>> getUpcomingMovies();
+  Future<List<MovieModel>> getUpcomingMovies({int page = 1});
 }
 
 class ComingSoonRemoteDataSourceImpl implements ComingSoonRemoteDataSource {
@@ -13,9 +13,12 @@ class ComingSoonRemoteDataSourceImpl implements ComingSoonRemoteDataSource {
   ComingSoonRemoteDataSourceImpl({required this.dioClient});
 
   @override
-  Future<List<MovieModel>> getUpcomingMovies() async {
+  Future<List<MovieModel>> getUpcomingMovies({int page = 1}) async {
     try {
-      final response = await dioClient.get(ApiConstants.upcomingMovies);
+      final response = await dioClient.get(
+        ApiConstants.upcomingMovies,
+        queryParameters: {'page': page},
+      );
       if (response.statusCode == 200 && response.data != null) {
         final List results = response.data['results'] as List? ?? [];
         return results

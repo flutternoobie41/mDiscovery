@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'core/constants/api_constants.dart';
 import 'core/constants/app_colors.dart';
 import 'core/di/injection_container.dart' as di;
 import 'features/main_navigation/presentation/cubit/navigation_cubit.dart';
@@ -22,6 +24,20 @@ void main() async {
 
   // Initialize GetIt dependency injection
   await di.initDependencyInjection();
+
+  // Try to load API key from gitignored assets config file at runtime if environment is empty
+  if (ApiConstants.apiKey.trim().isEmpty) {
+    try {
+      final configString = await rootBundle.loadString('assets/config/config.json');
+      final config = jsonDecode(configString) as Map<String, dynamic>;
+      final key = config['TMDB_API_KEY'] as String?;
+      if (key != null && key.trim().isNotEmpty) {
+        ApiConstants.apiKey = key.trim();
+      }
+    } catch (_) {
+      // Gracefully ignore if file does not exist or fails to parse
+    }
+  }
 
   runApp(const MDiscoverApp());
 }
@@ -53,6 +69,7 @@ class _MDiscoverAppState extends State<MDiscoverApp> {
             brightness: Brightness.dark,
             scaffoldBackgroundColor: AppColors.background,
             primaryColor: AppColors.primary,
+            fontFamily: 'SF Pro Display',
             colorScheme: const ColorScheme.dark(
               primary: AppColors.primary,
               surface: AppColors.surface,

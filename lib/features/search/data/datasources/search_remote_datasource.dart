@@ -4,7 +4,7 @@ import 'package:mdiscover/core/network/dio_client.dart';
 import 'package:mdiscover/features/dashboard/data/models/movie_model.dart';
 
 abstract class SearchRemoteDataSource {
-  Future<List<MovieModel>> searchMovies(String query);
+  Future<List<MovieModel>> searchMovies(String query, {int page = 1});
 }
 
 class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
@@ -13,13 +13,16 @@ class SearchRemoteDataSourceImpl implements SearchRemoteDataSource {
   SearchRemoteDataSourceImpl({required this.dioClient});
 
   @override
-  Future<List<MovieModel>> searchMovies(String query) async {
+  Future<List<MovieModel>> searchMovies(String query, {int page = 1}) async {
     if (query.trim().isEmpty) return [];
 
     try {
       final response = await dioClient.get(
         ApiConstants.searchMovies,
-        queryParameters: {'query': query},
+        queryParameters: {
+          'query': query,
+          'page': page,
+        },
       );
       if (response.statusCode == 200 && response.data != null) {
         final List results = response.data['results'] as List? ?? [];

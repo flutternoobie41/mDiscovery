@@ -9,9 +9,9 @@ class ComingSoonRepositoryImpl implements ComingSoonRepository {
   ComingSoonRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<DataState<List<MovieEntity>>> getUpcomingMovies() async {
+  Future<DataState<List<MovieEntity>>> getUpcomingMovies({int page = 1}) async {
     try {
-      final models = await remoteDataSource.getUpcomingMovies();
+      final models = await remoteDataSource.getUpcomingMovies(page: page);
       return DataSuccess(models);
     } catch (e) {
       return DataFailed(NetworkException(e.toString()));

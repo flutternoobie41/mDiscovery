@@ -9,9 +9,9 @@ class DashboardRepositoryImpl implements DashboardRepository {
   DashboardRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<DataState<List<MovieEntity>>> getTrendingMovies() async {
+  Future<DataState<List<MovieEntity>>> getTrendingMovies({int page = 1}) async {
     try {
-      final models = await remoteDataSource.getTrendingMovies();
+      final models = await remoteDataSource.getTrendingMovies(page: page);
       return DataSuccess(models);
     } catch (e) {
       return DataFailed(NetworkException(e.toString()));
@@ -19,9 +19,9 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   @override
-  Future<DataState<List<MovieEntity>>> getPopularMovies() async {
+  Future<DataState<List<MovieEntity>>> getPopularMovies({int page = 1}) async {
     try {
-      final models = await remoteDataSource.getPopularMovies();
+      final models = await remoteDataSource.getPopularMovies(page: page);
       return DataSuccess(models);
     } catch (e) {
       return DataFailed(NetworkException(e.toString()));
@@ -29,9 +29,9 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   @override
-  Future<DataState<List<MovieEntity>>> getNowPlayingMovies() async {
+  Future<DataState<List<MovieEntity>>> getNowPlayingMovies({int page = 1}) async {
     try {
-      final models = await remoteDataSource.getNowPlayingMovies();
+      final models = await remoteDataSource.getNowPlayingMovies(page: page);
       return DataSuccess(models);
     } catch (e) {
       return DataFailed(NetworkException(e.toString()));
@@ -39,9 +39,19 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   @override
-  Future<DataState<List<MovieEntity>>> getTopRatedMovies() async {
+  Future<DataState<List<MovieEntity>>> getTopRatedMovies({int page = 1}) async {
     try {
-      final models = await remoteDataSource.getTopRatedMovies();
+      final models = await remoteDataSource.getTopRatedMovies(page: page);
+      return DataSuccess(models);
+    } catch (e) {
+      return DataFailed(NetworkException(e.toString()));
+    }
+  }
+
+  @override
+  Future<DataState<List<MovieEntity>>> getUpcomingMovies({int page = 1}) async {
+    try {
+      final models = await remoteDataSource.getUpcomingMovies(page: page);
       return DataSuccess(models);
     } catch (e) {
       return DataFailed(NetworkException(e.toString()));

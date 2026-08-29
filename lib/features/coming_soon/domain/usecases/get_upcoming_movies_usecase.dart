@@ -7,7 +7,7 @@ class GetUpcomingMoviesUseCase {
 
   GetUpcomingMoviesUseCase({required this.repository});
 
-  Future<DataState<List<MovieEntity>>> execute() {
-    return repository.getUpcomingMovies();
+  Future<DataState<List<MovieEntity>>> execute({int page = 1}) {
+    return repository.getUpcomingMovies(page: page);
   }
 }

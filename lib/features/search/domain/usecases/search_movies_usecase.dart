@@ -7,7 +7,7 @@ class SearchMoviesUseCase {
 
   SearchMoviesUseCase({required this.repository});
 
-  Future<DataState<List<MovieEntity>>> execute(String query) {
-    return repository.searchMovies(query);
+  Future<DataState<List<MovieEntity>>> execute(String query, {int page = 1}) {
+    return repository.searchMovies(query, page: page);
   }
 }

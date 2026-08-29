@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../coming_soon/presentation/bloc/coming_soon_bloc.dart';
@@ -85,36 +86,66 @@ class MainNavigationScreen extends StatelessWidget {
               onTap: (index) => context.read<NavigationCubit>().selectTab(index),
               type: BottomNavigationBarType.fixed,
               backgroundColor: AppColors.surface,
-              selectedItemColor: AppColors.primary,
-              unselectedItemColor: AppColors.textMuted,
+              selectedItemColor: AppColors.activeBottomIconColor,
+              unselectedItemColor: AppColors.inactiveBottomIconColor,
               selectedFontSize: 11.sp,
               unselectedFontSize: 11.sp,
               elevation: 0,
-              items: const [
+              items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home_rounded),
-                  activeIcon: Icon(Icons.home_rounded, color: AppColors.primary),
+                  icon: SvgPicture.asset(
+                    'assets/svgs/home_icon.svg',
+                    colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
+                  ),
+                  activeIcon: SvgPicture.asset(
+                    'assets/svgs/home_icon.svg',
+                    colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
+                  ),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.search_rounded),
-                  activeIcon: Icon(Icons.search_rounded, color: AppColors.primary),
+                  icon: SvgPicture.asset(
+                    'assets/svgs/search_icon.svg',
+                    colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
+                  ),
+                  activeIcon: SvgPicture.asset(
+                    'assets/svgs/search_icon.svg',
+                    colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
+                  ),
                   label: 'Search',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.video_library_rounded),
-                  activeIcon: Icon(Icons.video_library_rounded, color: AppColors.primary),
+                  icon: SvgPicture.asset(
+                    'assets/svgs/coming_soon_icon.svg',
+                    colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
+                  ),
+                  activeIcon: SvgPicture.asset(
+                    'assets/svgs/coming_soon_icon.svg',
+                    colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
+                  ),
                   label: 'Coming Soon',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.file_download_outlined),
-                  activeIcon: Icon(Icons.file_download_rounded, color: AppColors.primary),
-                  label: 'Watchlist',
+                  icon: SvgPicture.asset(
+                    'assets/svgs/download_icon.svg',
+                    colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
+                  ),
+                  activeIcon: SvgPicture.asset(
+                    'assets/svgs/download_icon.svg',
+                    colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
+                  ),
+                  label: 'Downloads',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.person_outline_rounded),
-                  activeIcon: Icon(Icons.person_rounded, color: AppColors.primary),
-                  label: 'Profile',
+                  icon: SvgPicture.asset(
+                    'assets/svgs/more_icon.svg',
+                    colorFilter: const ColorFilter.mode(AppColors.inactiveBottomIconColor, BlendMode.srcIn),
+                  ),
+                  activeIcon: SvgPicture.asset(
+                    'assets/svgs/more_icon.svg',
+                    colorFilter: const ColorFilter.mode(AppColors.activeBottomIconColor, BlendMode.srcIn),
+                  ),
+                  label: 'More',
                 ),
               ],
             ),

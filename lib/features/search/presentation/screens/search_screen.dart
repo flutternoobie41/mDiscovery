@@ -26,6 +26,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+  late final ScrollController _scrollController;
 
   final List<Map<String, dynamic>> _genreCategories = [
     {'name': 'Action', 'icon': Icons.flash_on_rounded, 'color': const Color(0xFFFF5252)},
@@ -37,9 +38,25 @@ class _SearchScreenState extends State<SearchScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      context.read<SearchBloc>().add(const LoadMoreSearchMoviesEvent());
+    }
   }
 
   @override
@@ -106,7 +123,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     },
                   );
                 } else if (state is SearchLoadedState) {
-                  return _buildMovieGrid(state.movies);
+                  return _buildMovieGrid(state);
                 }
                 return const SizedBox.shrink();
               },
@@ -211,55 +228,75 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildMovieGrid(List<MovieEntity> movies) {
-    return GridView.builder(
-      padding: EdgeInsets.all(20.w),
-      itemCount: movies.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12.w,
-        mainAxisSpacing: 16.h,
-        childAspectRatio: 0.68,
-      ),
-      itemBuilder: (context, index) {
-        final movie = movies[index];
-        return GestureDetector(
-          onTap: () => widget.onMovieSelected(movie),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    CustomCachedImage(
-                      imageUrl: movie.posterPath,
-                      width: double.infinity,
-                      height: double.infinity,
-                      borderRadius: 16.r,
-                    ),
-                    Positioned(
-                      top: 8.h,
-                      right: 8.w,
-                      child: RatingBadge(rating: movie.voteAverage),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                movie.title,
-                style: AppTypography.titleLarge.copyWith(fontSize: 14.sp),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                movie.releaseDate.split('-').first,
-                style: AppTypography.bodySmall,
-              ),
-            ],
+  Widget _buildMovieGrid(SearchLoadedState state) {
+    final movies = state.movies;
+
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        SliverPadding(
+          padding: EdgeInsets.all(20.w),
+          sliver: SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12.w,
+              mainAxisSpacing: 16.h,
+              childAspectRatio: 0.68,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final movie = movies[index];
+                return GestureDetector(
+                  onTap: () => widget.onMovieSelected(movie),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            CustomCachedImage(
+                              imageUrl: movie.posterPath,
+                              width: double.infinity,
+                              height: double.infinity,
+                              borderRadius: 16.r,
+                            ),
+                            Positioned(
+                              top: 8.h,
+                              right: 8.w,
+                              child: RatingBadge(rating: movie.voteAverage),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        movie.title,
+                        style: AppTypography.titleLarge.copyWith(fontSize: 14.sp),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        movie.releaseDate.isNotEmpty ? movie.releaseDate.split('-').first : '',
+                        style: AppTypography.bodySmall,
+                      ),
+                    ],
+                  ),
+                );
+              },
+              childCount: movies.length,
+            ),
           ),
-        );
-      },
+        ),
+        if (state.isLoadMoreActive)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 24.h),
+              child: const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

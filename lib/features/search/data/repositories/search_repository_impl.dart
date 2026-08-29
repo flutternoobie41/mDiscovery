@@ -9,9 +9,9 @@ class SearchRepositoryImpl implements SearchRepository {
   SearchRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<DataState<List<MovieEntity>>> searchMovies(String query) async {
+  Future<DataState<List<MovieEntity>>> searchMovies(String query, {int page = 1}) async {
     try {
-      final models = await remoteDataSource.searchMovies(query);
+      final models = await remoteDataSource.searchMovies(query, page: page);
       return DataSuccess(models);
     } catch (e) {
       return DataFailed(NetworkException(e.toString()));

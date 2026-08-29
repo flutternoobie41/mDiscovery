@@ -39,7 +39,11 @@ void main() {
     wait: const Duration(milliseconds: 500),
     expect: () => [
       const SearchLoadingState(),
-      SearchLoadedState(movies: MockData.sampleMovies, query: 'Dune'),
+      SearchLoadedState(
+        movies: MockData.sampleMovies,
+        query: 'Dune',
+        hasReachedMax: true,
+      ),
     ],
     verify: (_) {
       verify(() => mockSearchMoviesUseCase.execute('Dune')).called(1);

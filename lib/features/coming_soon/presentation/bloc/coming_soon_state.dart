@@ -18,11 +18,33 @@ class ComingSoonLoadingState extends ComingSoonState {
 
 class ComingSoonLoadedState extends ComingSoonState {
   final List<MovieEntity> movies;
+  final int currentPage;
+  final bool hasReachedMax;
+  final bool isLoadMoreActive;
 
-  const ComingSoonLoadedState({required this.movies});
+  const ComingSoonLoadedState({
+    required this.movies,
+    this.currentPage = 1,
+    this.hasReachedMax = false,
+    this.isLoadMoreActive = false,
+  });
+
+  ComingSoonLoadedState copyWith({
+    List<MovieEntity>? movies,
+    int? currentPage,
+    bool? hasReachedMax,
+    bool? isLoadMoreActive,
+  }) {
+    return ComingSoonLoadedState(
+      movies: movies ?? this.movies,
+      currentPage: currentPage ?? this.currentPage,
+      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      isLoadMoreActive: isLoadMoreActive ?? this.isLoadMoreActive,
+    );
+  }
 
   @override
-  List<Object?> get props => [movies];
+  List<Object?> get props => [movies, currentPage, hasReachedMax, isLoadMoreActive];
 }
 
 class ComingSoonErrorState extends ComingSoonState {

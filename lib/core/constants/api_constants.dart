@@ -5,10 +5,9 @@ class ApiConstants {
   /// Base URL for TMDB API v3
   static const String baseUrl = 'https://api.themoviedb.org/3';
 
-  /// TMDB API Key passed via `--dart-define=TMDB_API_KEY=...` or fallback.
-  static const String apiKey = String.fromEnvironment(
+  /// TMDB API Key passed via `--dart-define=TMDB_API_KEY=...` or gitignored configuration.
+  static String apiKey = const String.fromEnvironment(
     'TMDB_API_KEY',
-    defaultValue: '4f8d689626359b398bf35a4d46cfc3c8', // Demo public fallback key
   );
 
   /// TMDB Image Base URLs

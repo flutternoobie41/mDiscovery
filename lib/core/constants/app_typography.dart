@@ -1,66 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
+import 'app_style.dart';
 
-/// App typography definitions using Google Fonts Inter/Outfit and ScreenUtil.
 class AppTypography {
   AppTypography._();
 
-  static TextStyle get heading1 => GoogleFonts.outfit(
+  static TextStyle get heading1 => AppStyle.tssW700.copyWith(
         fontSize: 28.sp,
-        fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
         height: 1.2,
       );
 
-  static TextStyle get heading2 => GoogleFonts.outfit(
+  static TextStyle get heading2 => AppStyle.tssW700.copyWith(
         fontSize: 22.sp,
-        fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
         height: 1.25,
       );
 
-  static TextStyle get heading3 => GoogleFonts.outfit(
+  static TextStyle get heading3 => AppStyle.tssW500.copyWith(
         fontSize: 18.sp,
-        fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
         height: 1.3,
       );
 
-  static TextStyle get titleLarge => GoogleFonts.inter(
+  static TextStyle get titleLarge => AppStyle.tssW500.copyWith(
         fontSize: 16.sp,
-        fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       );
 
-  static TextStyle get bodyLarge => GoogleFonts.inter(
+  static TextStyle get bodyLarge => AppStyle.tssW400.copyWith(
         fontSize: 14.sp,
-        fontWeight: FontWeight.normal,
         color: AppColors.textPrimary,
       );
 
-  static TextStyle get bodyMedium => GoogleFonts.inter(
+  static TextStyle get bodyMedium => AppStyle.tssW400.copyWith(
         fontSize: 13.sp,
-        fontWeight: FontWeight.normal,
         color: AppColors.textSecondary,
       );
 
-  static TextStyle get bodySmall => GoogleFonts.inter(
+  static TextStyle get bodySmall => AppStyle.tssW400.copyWith(
         fontSize: 11.sp,
-        fontWeight: FontWeight.normal,
         color: AppColors.textMuted,
       );
 
-  static TextStyle get caption => GoogleFonts.inter(
+  static TextStyle get caption => AppStyle.tssW500.copyWith(
         fontSize: 10.sp,
-        fontWeight: FontWeight.w500,
         color: AppColors.textMuted,
       );
 
-  static TextStyle get button => GoogleFonts.inter(
+  static TextStyle get button => AppStyle.tssW500.copyWith(
         fontSize: 14.sp,
-        fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       );
 }

@@ -10,3 +10,7 @@ abstract class ComingSoonEvent extends Equatable {
 class FetchUpcomingMoviesEvent extends ComingSoonEvent {
   const FetchUpcomingMoviesEvent();
 }
+
+class LoadMoreUpcomingMoviesEvent extends ComingSoonEvent {
+  const LoadMoreUpcomingMoviesEvent();
+}

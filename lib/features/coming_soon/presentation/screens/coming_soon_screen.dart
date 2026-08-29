@@ -25,6 +25,28 @@ class ComingSoonScreen extends StatefulWidget {
 
 class _ComingSoonScreenState extends State<ComingSoonScreen> {
   final Set<int> _remindedMovieIds = {};
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      context.read<ComingSoonBloc>().add(const LoadMoreUpcomingMoviesEvent());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +75,19 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
                 context.read<ComingSoonBloc>().add(const FetchUpcomingMoviesEvent());
               },
               child: ListView.builder(
+                controller: _scrollController,
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-                itemCount: state.movies.length,
+                itemCount: state.movies.length + (state.isLoadMoreActive ? 1 : 0),
                 itemBuilder: (context, index) {
+                  if (index == state.movies.length) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      child: const Center(
+                        child: CircularProgressIndicator(color: AppColors.primary),
+                      ),
+                    );
+                  }
+
                   final movie = state.movies[index];
                   final isReminded = _remindedMovieIds.contains(movie.id);
 

@@ -32,6 +32,9 @@ class _SplashScreenState extends State<SplashScreen> {
     if (kIsWeb) {
       return true;
     }
+    if (Platform.environment.containsKey('FLUTTER_TEST')) {
+      return true;
+    }
     try {
       final result = await InternetAddress.lookup('google.com')
           .timeout(const Duration(seconds: 4));

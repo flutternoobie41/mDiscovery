@@ -29,6 +29,10 @@ class AppColors {
   static const Color shimmerBase = Color(0xFF1E222D);
   static const Color shimmerHighlight = Color(0xFF2A3040);
 
+  // Bottom Navigation Colors
+  static const Color activeBottomIconColor = Color(0xFFFFFFFF);
+  static const Color inactiveBottomIconColor = Color(0xFF8C8787);
+
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primary, primaryGradientEnd],

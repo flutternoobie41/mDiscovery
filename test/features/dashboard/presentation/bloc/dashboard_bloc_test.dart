@@ -25,10 +25,19 @@ void main() {
   });
 
   final tDashboardData = DashboardData(
-    trending: MockData.sampleMovies,
+    previews: MockData.sampleMovies,
+    continueWatching: MockData.sampleMovies,
     popular: MockData.sampleMovies,
-    nowPlaying: MockData.sampleMovies,
-    topRated: MockData.sampleMovies,
+    trending: MockData.sampleMovies,
+    top10: MockData.sampleMovies,
+    myList: MockData.sampleMovies,
+    africanMovies: MockData.sampleMovies,
+    nollywood: MockData.sampleMovies,
+    netflixOriginals: MockData.sampleMovies,
+    watchItAgain: MockData.sampleMovies,
+    newReleases: MockData.sampleMovies,
+    tvThrillers: MockData.sampleMovies,
+    usTvShows: MockData.sampleMovies,
   );
 
   test('initial state should be DashboardInitialState', () {
