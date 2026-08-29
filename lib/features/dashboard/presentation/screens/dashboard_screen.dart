@@ -14,6 +14,7 @@ import '../widgets/hero_banner_widget.dart';
 import '../widgets/previews_list_widget.dart';
 import '../widgets/continue_watching_list_widget.dart';
 import '../widgets/movie_rail_widget.dart';
+import '../../../main_navigation/presentation/cubit/navigation_cubit.dart';
 
 class DashboardScreen extends StatefulWidget {
   final Function(MovieEntity) onMovieSelected;
@@ -83,9 +84,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final showSolidHeader = _scrollOffset > 50;
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: BlocConsumer<DashboardBloc, DashboardState>(
+    return BlocListener<NavigationCubit, int>(
+      listener: (context, state) {
+        if (state == 0) {
+          context.read<DashboardBloc>().add(const FetchDashboardMoviesEvent());
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: BlocConsumer<DashboardBloc, DashboardState>(
         listener: (context, state) {
           if (state is DashboardLoadedState) {
             _precacheAllMovies(state);
@@ -291,8 +298,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return const SizedBox.shrink();
         },
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildShimmerLoading() {
     return SingleChildScrollView(
