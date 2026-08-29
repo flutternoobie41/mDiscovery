@@ -61,7 +61,7 @@ class _MDiscoverAppState extends State<MDiscoverApp> {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
-          title: 'MDiscover',
+          title: 'mDiscover',
           debugShowCheckedModeBanner: false,
           themeMode: ThemeMode.dark,
           darkTheme: ThemeData(
