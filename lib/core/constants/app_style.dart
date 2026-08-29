@@ -43,6 +43,30 @@ class AppStyle {
         fontWeight: FontWeight.w700,
       );
 
+  static TextStyle get tss12W400 => TextStyle(
+        fontFamily: fontFamily,
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w400,
+      );
+
+  static TextStyle get tss18W500 => TextStyle(
+        fontFamily: fontFamily,
+        fontSize: 13.sp,
+        fontWeight: FontWeight.w500,
+      );
+
+  static TextStyle get tss34W600 => TextStyle(
+        fontFamily: fontFamily,
+        fontSize: 15.sp,
+        fontWeight: FontWeight.w600,
+      );
+
+  static TextStyle get tss30W500 => TextStyle(
+        fontFamily: fontFamily,
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w500,
+      );
+
   // Weight-only styles (fallbacks to default font size)
   static const TextStyle tssW300 = TextStyle(
     fontFamily: fontFamily,
