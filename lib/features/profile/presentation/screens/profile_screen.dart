@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_style.dart';
+import '../widgets/profile_avatar.dart';
+import '../widgets/profile_menu_item.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -30,11 +31,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildProfileItem('Emenalo', 'assets/images/rectangle1.jpg'),
-                    _buildProfileItem('Onyeka', 'assets/images/rectangle2.jpg'),
-                    _buildProfileItem('Thelma', 'assets/images/rectangle3.jpg'),
-                    _buildProfileItem('Kids', 'assets/images/kids_rectangle.jpg'),
-                    _buildAddProfileItem(),
+                    ProfileAvatarItem(
+                      name: 'Emenalo',
+                      imageAsset: 'assets/images/rectangle1.jpg',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Switched to profile Emenalo')),
+                        );
+                      },
+                    ),
+                    ProfileAvatarItem(
+                      name: 'Onyeka',
+                      imageAsset: 'assets/images/rectangle2.jpg',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Switched to profile Onyeka')),
+                        );
+                      },
+                    ),
+                    ProfileAvatarItem(
+                      name: 'Thelma',
+                      imageAsset: 'assets/images/rectangle3.jpg',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Switched to profile Thelma')),
+                        );
+                      },
+                    ),
+                    ProfileAvatarItem(
+                      name: 'Kids',
+                      imageAsset: 'assets/images/kids_rectangle.jpg',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Switched to profile Kids')),
+                        );
+                      },
+                    ),
+                    AddProfileAvatarItem(
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Add profile tapped')),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -270,10 +309,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(height: 12.h),
                     Divider(color: Colors.grey.shade800, thickness: 1.h, height: 1.h),
                     SizedBox(height: 12.h),
-                    _buildBottomListItem('App Settings'),
-                    _buildBottomListItem('Account'),
-                    _buildBottomListItem('Help'),
-                    _buildBottomListItem('Sign Out'),
+                    ProfileMenuItem(
+                      text: 'App Settings',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('App Settings tapped')),
+                        );
+                      },
+                    ),
+                    ProfileMenuItem(
+                      text: 'Account',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Account tapped')),
+                        );
+                      },
+                    ),
+                    ProfileMenuItem(
+                      text: 'Help',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Help tapped')),
+                        );
+                      },
+                    ),
+                    ProfileMenuItem(
+                      text: 'Sign Out',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Sign Out tapped')),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -285,97 +352,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildProfileItem(String name, String imageAsset) {
-    return GestureDetector(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Switched to profile $name')),
-        );
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4.r),
-            child: Image.asset(
-              imageAsset,
-              width: 60.w,
-              height: 60.w,
-              fit: BoxFit.cover,
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            name,
-            style: AppStyle.tss12W400.copyWith(color: Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAddProfileItem() {
-    return GestureDetector(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Add profile tapped')),
-        );
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 60.w,
-            height: 60.w,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              border: Border.all(color: Colors.grey.shade800, width: 1.5.w),
-              borderRadius: BorderRadius.circular(4.r),
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                'assets/svgs/plus_plane.svg',
-                width: 20.w,
-                height: 20.h,
-                colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-              ),
-            ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            '',
-            style: AppStyle.tss12W400.copyWith(color: Colors.transparent),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildVerticalDivider() {
     return Container(
       width: 1.w,
       height: 36.h,
       color: Colors.grey.shade800,
-    );
-  }
-
-  Widget _buildBottomListItem(String text) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.h),
-      child: InkWell(
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('$text tapped')),
-          );
-        },
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            text,
-            style: AppStyle.tss30W500.copyWith(color: Colors.white),
-          ),
-        ),
-      ),
     );
   }
 }

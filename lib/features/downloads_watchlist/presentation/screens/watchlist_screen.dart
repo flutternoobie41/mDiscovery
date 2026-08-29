@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mdiscover/core/constants/app_colors.dart';
 import 'package:mdiscover/core/constants/app_style.dart';
 import 'package:mdiscover/core/constants/mock_data.dart';
-import 'package:mdiscover/core/widgets/custom_cached_image.dart';
 import 'package:mdiscover/features/dashboard/domain/entities/movie_entity.dart';
+import '../widgets/watchlist_movie_list_item.dart';
 
 class WatchlistScreen extends StatelessWidget {
   final Function(MovieEntity) onMovieSelected;
@@ -44,7 +42,7 @@ class WatchlistScreen extends StatelessWidget {
                 children: movies.map((movie) {
                   return Padding(
                     padding: EdgeInsets.only(bottom: 3.h),
-                    child: _MovieListItem(
+                    child: WatchlistMovieListItem(
                       movie: movie,
                       onTap: () => onMovieSelected(movie),
                     ),
@@ -54,56 +52,6 @@ class WatchlistScreen extends StatelessWidget {
               SizedBox(height: 16.h),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MovieListItem extends StatelessWidget {
-  final MovieEntity movie;
-  final VoidCallback onTap;
-
-  const _MovieListItem({
-    required this.movie,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        color: AppColors.searchBarBg,
-        height: 76.h,
-        width: double.infinity,
-        child: Row(
-          children: [
-            CustomCachedImage(
-              imageUrl: movie.backdropPath,
-              width: 140.w,
-              height: 76.h,
-              fit: BoxFit.cover,
-              borderRadius: 0,
-            ),
-            SizedBox(width: 20.w),
-            Expanded(
-              child: Text(
-                movie.title,
-                style: AppStyle.tss15W400.copyWith(color: Colors.white),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: SvgPicture.asset(
-                'assets/svgs/play_circle.svg',
-                width: 28.w,
-                height: 28.h,
-              ),
-            ),
-          ],
         ),
       ),
     );
