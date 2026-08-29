@@ -64,6 +64,9 @@ class _SearchScreenState extends State<SearchScreen> {
       listener: (context, state) {
         if (state == 1) {
           context.read<SearchBloc>().add(const LoadTrendingMoviesEvent());
+        } else {
+          _searchController.clear();
+          context.read<SearchBloc>().add(const ClearSearchEvent());
         }
       },
       child: Scaffold(
